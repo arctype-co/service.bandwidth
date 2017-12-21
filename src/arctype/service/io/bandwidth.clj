@@ -21,7 +21,10 @@
 
 (def default-config
   {:endpoint "https://api.catapult.inetwork.com"
-   :http {}})
+   :http {:throttle
+          {:rate 1
+           :period :second
+           :burst 1}}})
 
 (defn- api-post-request
   [{{api-token :api-token
@@ -39,7 +42,8 @@
 
 (def xform-response
   (http-client/xform-response
-    {:200 (fn [{:keys [body]}] (json/decode body true))}))
+    {:200 (fn [{:keys [body]}] (json/decode body true))
+     :201 (fn [{:keys [body]}] (json/decode body true))}))
 
 (defn- response-chan
   []
